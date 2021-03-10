@@ -22,8 +22,7 @@ library(RColorBrewer)
 # Read the dataset
 
 ```{r, include=TRUE}
-drug.df <- read.csv("Data/drug/small_set.tsv",sep="\t",nrows = 10000)[ ,c("UDPYOPI","BOOKED","TXEVRRCVD","BMI2","IRABUPOSSED",
-                                                                          "IRABUPOSTRQ","IRABUPOSMTH", "IRABUPOSINH","CIGYRBFR","HALLUCEVR","IRCGRGDY","IRABUPOSSTM")]
+drug.df <- read.csv("Data/drug/small_set.tsv",sep="\t",nrows = 10000)[ ,c("UDPYOPI","BOOKED","TXEVRRCVD","BMI2","IRABUPOSSED","IRABUPOSTRQ","IRABUPOSMTH", "IRABUPOSINH","CIGYRBFR","HALLUCEVR","IRCGRGDY","IRABUPOSSTM","YEPHLPHW","YEPPROUD","YEFAIACT","MILTPARNT","IRFAMSOC","INCOME","HLTINMNT","AUUNMTYR","HLTINNOS","MEDICARE","EDUSCHLGO","WRKDPSTWK","YEATNDYR","YESTSMJ","YESTSCIG","YESTSALC")]
 ```
 
 
@@ -70,8 +69,177 @@ ggplot(aes(x = IRABUPOSSED), data = drug.df) +
 summary(drug.df$IRABUPOSTRQ)
 ggplot(aes(x = IRABUPOSTRQ), data = drug.df) +
   geom_histogram(color = "azure3", fill = "aquamarine4")
-
+#"YEFAIACT","MILTPARNT","IRFAMSOC","INCOME","HLTINMNT","AUUNMTYR","HLTINNOS","MEDICARE","EDUSCHLGO","WRKDPSTWK","YEATNDYR","YESTSMJ","YESTSCIG","YESTSALC"
 summary(drug.df$IRABUPOSMTH)
 ggplot(aes(x = IRABUPOSMTH), data = drug.df) +
   geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$IRABUPOSINH)
+ggplot(aes(x = IRABUPOSINH), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$CIGYRBFR)
+ggplot(aes(x = CIGYRBFR), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$HALLUCEVR)
+ggplot(aes(x = HALLUCEVR), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$IRCGRGDY)
+ggplot(aes(x = IRCGRGDY), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$IRABUPOSSTM)
+ggplot(aes(x = IRABUPOSSTM), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$YEPHLPHW)
+ggplot(aes(x = YEPHLPHW), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$YEPPROUD)
+ggplot(aes(x = YEPPROUD), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+
+summary(drug.df$YEFAIACT)
+ggplot(aes(x = YEFAIACT), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$MILTPARNT)
+ggplot(aes(x = MILTPARNT), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$IRFAMSOC)
+ggplot(aes(x = IRFAMSOC), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$INCOME)
+ggplot(aes(x = INCOME), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$HLTINMNT)
+ggplot(aes(x = HLTINMNT), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+
+summary(drug.df$AUUNMTYR)
+ggplot(aes(x = AUUNMTYR), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$HLTINNOS)
+ggplot(aes(x = HLTINNOS), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$MEDICARE)
+ggplot(aes(x = MEDICARE), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$EDUSCHLGO)
+ggplot(aes(x = EDUSCHLGO), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$WRKDPSTWK)
+ggplot(aes(x = WRKDPSTWK), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$YEATNDYR)
+ggplot(aes(x = YEATNDYR), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$YESTSMJ)
+ggplot(aes(x = YESTSMJ), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$YESTSCIG)
+ggplot(aes(x = YESTSCIG), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
+summary(drug.df$YESTSALC)
+ggplot(aes(x = YESTSALC), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4") 
+
 ```
+
+```{r, echo=FALSE, Box_Plots, message=FALSE, warning=FALSE, fig.width=9, fig.height=7}
+drug.df$UDPYOPI = as.factor(drug.df$UDPYOPI)
+
+ ggplot(aes(x = UDPYOPI, y = BOOKED), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+
+ ggplot(aes(x = UDPYOPI, y = TXEVRRCVD), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+ 
+  ggplot(aes(x = UDPYOPI, y = BMI2), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+  
+   ggplot(aes(x = UDPYOPI, y = IRABUPOSSED), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+   
+    ggplot(aes(x = UDPYOPI, y = IRABUPOSTRQ), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+    
+ ggplot(aes(x = UDPYOPI, y = IRABUPOSMTH), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+ 
+  ggplot(aes(x = UDPYOPI, y = IRABUPOSINH), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+  
+   ggplot(aes(x = UDPYOPI, y = CIGYRBFR), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+   
+   ggplot(aes(x = UDPYOPI, y = HALLUCEVR), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+   
+   
+   
+   ggplot(aes(x = UDPYOPI, y = IRCGRGDY), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+   
+      ggplot(aes(x = UDPYOPI, y = IRABUPOSSTM), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+      
+         ggplot(aes(x = UDPYOPI, y = YEPHLPHW), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+         
+     ggplot(aes(x = UDPYOPI, y = YEPPROUD), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+     
+     ggplot(aes(x = UDPYOPI, y = YEFAIACT), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+     
+     ggplot(aes(x = UDPYOPI, y = MILTPARNT), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+```
+
