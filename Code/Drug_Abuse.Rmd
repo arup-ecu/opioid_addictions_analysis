@@ -1,0 +1,77 @@
+---
+title: "Substance Abuse and Mental Health"
+author: "Arup Ghosh"
+date: "3/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r libraries, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(gridExtra)
+library(GGally) # ggpairs() for scatterplot matrix
+library(RColorBrewer)
+```
+
+# Read the dataset
+
+```{r, include=TRUE}
+drug.df <- read.csv("Data/drug/small_set.tsv",sep="\t",nrows = 10000)[ ,c("UDPYOPI","BOOKED","TXEVRRCVD","BMI2","IRABUPOSSED",
+                                                                          "IRABUPOSTRQ","IRABUPOSMTH", "IRABUPOSINH","CIGYRBFR","HALLUCEVR","IRCGRGDY","IRABUPOSSTM")]
+```
+
+
+```{r, include=TRUE}
+class(drug.df)
+```
+```{r, include=TRUE}
+names(drug.df)
+```
+```{r, include=TRUE}
+dim(drug.df)
+```
+```{r, include=TRUE}
+str(drug.df)
+```
+```{r, include=TRUE}
+summary(drug.df)
+```
+# Histogram plots of variables
+
+
+```{r, warning=FALSE,  message=FALSE, echo=FALSE}
+
+summary(drug.df$UDPYOPI)
+ggplot(aes(x = UDPYOPI), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$BOOKED)
+ggplot(aes(x = BOOKED), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$TXEVRRCVD)
+ggplot(aes(x = TXEVRRCVD), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$BMI2)
+ggplot(aes(x = BMI2), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$IRABUPOSSED)
+ggplot(aes(x = IRABUPOSSED), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$IRABUPOSTRQ)
+ggplot(aes(x = IRABUPOSTRQ), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+
+summary(drug.df$IRABUPOSMTH)
+ggplot(aes(x = IRABUPOSMTH), data = drug.df) +
+  geom_histogram(color = "azure3", fill = "aquamarine4")
+```
