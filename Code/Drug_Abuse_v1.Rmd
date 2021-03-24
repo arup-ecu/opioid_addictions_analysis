@@ -1,0 +1,94 @@
+---
+title: "Substance Abuse and Mental Health"
+author: "Arup Ghosh"
+date: "3/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r libraries, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(gridExtra)
+library(GGally) # ggpairs() for scatterplot matrix
+library(RColorBrewer)
+```
+
+# Read the dataset
+
+```{r, include=TRUE}
+#https://www.datacamp.com/community/tutorials/logistic-regression-R
+#drug.df <- read.csv("Data/drug/small_set_1.tsv",sep="\t",nrows = 25000)[ ,c("UDPYOPI","BOOKED","TXEVRRCVD","BMI2","IRABUPOSSED","IRABUPOSTRQ","IRABUPOSMTH", "IRABUPOSINH","CIGYRBFR","HALLUCEVR","IRCGRGDY","IRABUPOSSTM","YEPHLPHW","YEPPROUD","YEFAIACT","MILTPARNT","IRFAMSOC","INCOME","HLTINMNT","AUUNMTYR","HLTINNOS","MEDICARE","EDUSCHLGO","WRKDPSTWK","YEATNDYR","YESTSMJ","YESTSCIG","YESTSALC","AGE2")]
+drug.df <- read.csv("Data/drug/small_set_1.tsv",sep="\t",nrows = 25000)[ ,c("UDPYOPI","BOOKED","TXEVRRCVD","BMI2","IRABUPOSSED","IRABUPOSTRQ","IRABUPOSMTH", "IRABUPOSINH","CIGYRBFR","HALLUCEVR","IRCGRGDY","IRABUPOSSTM","HLTINMNT","AUUNMTYR","AGE2")]
+```
+
+
+```{r, include=TRUE}
+class(drug.df)
+```
+```{r, include=TRUE}
+names(drug.df)
+
+names(drug.df)[names(drug.df) == "UDPYOPI"] <- "OPIOID_DEPENDENCE_OR_ABUSE"
+ 
+#drug.df$OPIOID_DEPENDENCE_OR_ABUSE[drug.df$OPIOID_DEPENDENCE_OR_ABUSE == 0] <- "No"
+#drug.df$OPIOID_DEPENDENCE_OR_ABUSE[drug.df$OPIOID_DEPENDENCE_OR_ABUSE == 1] <- "Yes"
+
+names(drug.df)[names(drug.df) == "TXEVRRCVD"] <- "EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT"
+ 
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 2] <- "No"
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 1] <- "Yes"
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 85] <- "BAD DATA"
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 91] <- "NEVER USED ALCOHOL OR DRUGS"
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 94] <- "DONT KNOW"
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 97] <- "REFUSED"
+#drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT[drug.df$EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT == 98] <- "BLANK"
+```
+
+
+```{r, include=TRUE}
+dim(drug.df)
+```
+```{r, include=TRUE}
+opioid.df <- filter(drug.df, OPIOID_DEPENDENCE_OR_ABUSE == "1")
+dim(opioid.df)
+```
+# Bivariate plots
+
+```{r, echo=FALSE, Bivariate_Plots, message=FALSE, warning=FALSE, fig.width=15, fig.height=15}
+
+
+set.seed(200)
+ggpairs(opioid.df, title="Correlogram with ggpairs()", color="blue") +
+  theme(text = element_text(size = 8)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 7))
+
+```
+```{r, include=TRUE}
+str(opioid.df)
+```
+```{r, include=TRUE}
+summary(opioid.df)
+```
+```{r, include=TRUE}
+# Logistics Regression
+glm.fit <- glm(OPIOID_DEPENDENCE_OR_ABUSE ~ AUUNMTYR + BMI2 + IRCGRGDY + IRABUPOSSTM , data = opioid.df, family = binomial)
+summary(glm.fit)
+```
+```{r, echo=FALSE, Box_Plots, message=FALSE, warning=FALSE, fig.width=9, fig.height=7}
+drug.df$OPIOID_DEPENDENCE_OR_ABUSE = as.factor(drug.df$OPIOID_DEPENDENCE_OR_ABUSE)
+
+
+ ggplot(aes(x = OPIOID_DEPENDENCE_OR_ABUSE, y = EVR_RCVD_ALCOHOL_OR_DRUG_TRTMNT), data = drug.df) +
+  geom_boxplot(color="aquamarine4") +
+  geom_jitter(alpha = 0.1, color="firebrick")+
+  coord_cartesian(ylim=c(0, 35))
+ 
+
+```
+
