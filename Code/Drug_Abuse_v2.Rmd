@@ -1,0 +1,134 @@
+---
+title: "Substance Abuse and Mental Health"
+author: "Arup Ghosh"
+date: "3/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r libraries, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(gridExtra)
+library(GGally) # ggpairs() for scatterplot matrix
+library(RColorBrewer)
+library(tidyverse)  # data manipulation and visualization
+library(modelr)     # provides easy pipeline modeling functions
+library(broom)      # helps to tidy up model outputs
+library(randomForest)
+```
+
+# Read the dataset
+#https://www.datacamp.com/community/tutorials/logistic-regression-R
+
+```{r, include=TRUE}
+#drug.df <- read.csv("Data/drug/small_set_1.tsv",sep="\t",nrows = 25000)[ ,c("UDPYOPI","BOOKED","TXEVRRCVD","BMI2","IRABUPOSSED","IRABUPOSTRQ","IRABUPOSMTH", "IRABUPOSINH","CIGYRBFR","HALLUCEVR","IRCGRGDY","IRABUPOSSTM","YEPHLPHW","YEPPROUD","YEFAIACT","MILTPARNT","IRFAMSOC","INCOME","HLTINMNT","AUUNMTYR","HLTINNOS","MEDICARE","EDUSCHLGO","WRKDPSTWK","YEATNDYR","YESTSMJ","YESTSCIG","YESTSALC","AGE2")]
+drug.df <- read.csv("Data/drug/small_set_1.tsv",sep="\t",nrows = 25000)[ ,c("UDPYOPI","YEPHLPHW","YESTSALC","IRABUPOSINH","IRABUPOSMTH","YESTSCIG","IRCGRGDY","TXEVRRCVD")]
+```
+
+```{r, include=TRUE}
+class(drug.df)
+```
+```{r, include=TRUE}
+names(drug.df)
+```
+```{r, include=TRUE}
+dim(drug.df)
+```
+```{r, include=TRUE}
+opioid_user.df <- filter(drug.df, UDPYOPI == "1")
+dim(opioid_user.df)
+```
+```{r, include=TRUE}
+not_opioid_user.df <- filter(drug.df, UDPYOPI == "0")
+dim(not_opioid_user.df)
+```
+# Training Data and Test Data split
+```{r, echo=TRUE}
+dt = sort(sample(nrow(not_opioid_user.df), nrow(not_opioid_user.df)*.7))
+train_subset<-not_opioid_user.df[dt,]
+dim(train_subset)
+test<-not_opioid_user.df[-dt,]
+dim(test)
+```
+# Training Data finalization 70% of population who not used opium + 100% population who used opium
+```{r, echo=TRUE}
+train<-rbind(train_subset, opioid_user.df)
+dim(train)
+```
+```{r, include=TRUE}
+str(train)
+```
+
+```{r, include=TRUE}
+summary(train)
+```
+# Logistics Regression
+```{r, include=TRUE}
+glm.fit <- glm(UDPYOPI ~ YEPHLPHW + YESTSALC + IRABUPOSINH + IRABUPOSMTH+YESTSCIG+IRCGRGDY+TXEVRRCVD , 
+               data = train, 
+               #subset = train, 
+               family = binomial)
+summary(glm.fit)
+tidy(glm.fit)
+```
+
+#first 5 probabilities and they are very close to 0%
+```{r, include=TRUE}
+glm.prob <- predict(glm.fit, test, type = "response")
+glm.prob[1:5]
+```
+- Now I am going to make a prediction of whether the person will be addicted(Yes/No) based on the lags and other predictors. In particular, I'll turn the probabilities into classifications by thresholding at 0.5. In order to do so, I use an ifelse() command.
+
+```{r, include=TRUE}
+glm.pred <- ifelse(glm.prob >0, "Yes", "No")
+#class(glm.pred)
+#not_opioid_user.df <- filter(drug.df, UDPYOPI == "0")
+#dim(not_opioid_user.df)
+#glm.pred
+
+Test.UDPYOPI = test$UDPYOPI
+table(glm.pred, Test.UDPYOPI)
+mean(glm.pred == Test.UDPYOPI)
+```
+# Random Forest Algorithm
+-The random forest algorithm works by aggregating the predictions made by multiple decision trees of varying depth. Every decision tree in the forest is trained on a subset of the dataset called the bootstrapped dataset.
+
+-Random forest algorithm is a supervised classification and regression algorithm. As the name suggests, this algorithm randomly creates a forest with several trees.
+
+-Generally, the more trees in the forest the more robust the forest looks like. Similarly, in the random forest classifier, the higher the number of trees in the forest, greater is the accuracy of the results.
+
+```{r, include=TRUE}
+rf_classifier = randomForest(UDPYOPI ~ YEPHLPHW + YESTSALC + IRABUPOSINH + IRABUPOSMTH+YESTSCIG+IRCGRGDY+TXEVRRCVD, data=train,ntree=100,mtry=2, importance = TRUE, na.rm = TRUE)
+rf_classifier
+```
+```{r, include=TRUE}
+summary(rf_classifier, na.rm = TRUE)
+```
+
+-Mean Decrease Accuracy (%IncMSE) - This shows how much our model accuracy decreases if we leave out that variable.The higher the value of mean decrease accuracy or mean decrease gini score, the higher the importance of the variable to our model.
+
+-IncNodePurity relates to the loss function which by best splits are chosen. The loss function is mse for regression and gini-impurity for classification. More useful variables achieve higher increases in node purities, that is to find a split which has a high inter node 'variance' and a small intra node 'variance'.
+
+```{r, include=TRUE}
+varImpPlot(rf_classifier)
+```
+```{r, include=TRUE}
+importance(rf_classifier)
+```
+
+
+```{r, include=TRUE}
+
+prediction_for_table <- predict(rf_classifier,test[,-9], na.rm = TRUE)#IRABUPOSMTH
+```
+```{r, include=TRUE}
+
+cm = table(observed=test[,8],predicted=prediction_for_table)
+#prediction_table
+```
